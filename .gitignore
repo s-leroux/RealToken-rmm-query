@@ -4,3 +4,5 @@ node_modules/
 
 .bash_history
 .viminfo
+
+.env
