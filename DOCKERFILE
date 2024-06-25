@@ -11,7 +11,7 @@
 FROM heroku/heroku:20
 
 ARG NODE_ARCH=linux-x64
-ARG NODE_VERSION=14.15.4
+ARG NODE_VERSION=18.20.3
 RUN cd /usr/local && \
     wget -O- --progress=dot:mega https://nodejs.org/dist/v"${NODE_VERSION}"/node-v"${NODE_VERSION}-${NODE_ARCH}".tar.xz | tar xJf - && \
     ln -sT "node-v${NODE_VERSION}-${NODE_ARCH}" node
