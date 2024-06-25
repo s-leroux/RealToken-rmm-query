@@ -20,5 +20,8 @@
     "rmm"
   ],
   "author": "Sylvain Leroux",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@graphprotocol/client-cli": "^3.0.3"
+  }
 }
