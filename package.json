@@ -1,0 +1,16 @@
+{
+  "name": "realtoken-rmm-query",
+  "version": "0.0.0",
+  "description": "Simple query tool for RealT's RMM",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "realt",
+    "realtoken.",
+    "rmm"
+  ],
+  "author": "Sylvain Leroux",
+  "license": "MIT"
+}
