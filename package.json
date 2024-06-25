@@ -23,6 +23,7 @@
   "author": "Sylvain Leroux",
   "license": "MIT",
   "devDependencies": {
-    "@graphprotocol/client-cli": "^3.0.3"
+    "@graphprotocol/client-cli": "^3.0.3",
+    "typescript": "^5.5.2"
   }
 }
