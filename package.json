@@ -12,7 +12,8 @@
     "test": "mocha",
     "start": "ls",
     "build-container": "sudo docker build --tag \"${npm_package_config_container_tag}\" - < DOCKERFILE",
-    "run-container": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home -p 3000:3000/tcp yesik/rt npm start"
+    "run-container": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home -p 3000:3000/tcp \"${npm_package_config_container_tag}\" npm start",
+    "shell": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home -p 3000:3000/tcp \"${npm_package_config_container_tag}\" /bin/bash"
   },
   "keywords": [
     "realt",
