@@ -2,6 +2,7 @@
   "name": "realtoken-rmm-query",
   "version": "0.0.0",
   "description": "Simple query tool for RealT's RMM",
+  "packageManager": "yarn@4.3.1",
   "main": "main.js",
   "config": {
     "container": {
@@ -10,8 +11,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "ls",
-    "graphclient-build": "graphclient build",
+    "start": "env $(cat .env) node build/main.js",
     "build-container": "sudo docker build --tag \"${npm_package_config_container_tag}\" - < DOCKERFILE",
     "run-container": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home -p 3000:3000/tcp \"${npm_package_config_container_tag}\" npm start",
     "shell": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home \"${npm_package_config_container_tag}\" /bin/bash"
@@ -23,8 +23,11 @@
   ],
   "author": "Sylvain Leroux",
   "license": "MIT",
+  "dependencies": {
+    "@urql/core": "^5.0.4"
+  },
   "devDependencies": {
-    "@graphprotocol/client-cli": "^3.0.3",
+    "@types/node": "^20.14.9",
     "typescript": "^5.5.2"
   }
 }
