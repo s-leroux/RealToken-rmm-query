@@ -3,20 +3,51 @@ import { Client, fetchExchange } from '@urql/core';
 const THEGRAPH_API_KEY=process.env.THEGRAPH_API_KEY
 const MY_WALLET=process.env.MY_WALLET
 const QUERY = `
-	query MyQuery($id: ID!) {
-	  userTransactions(where: {user: $id}) {
-	    id
-	    timestamp
-	    action
-	    ... on Supply {
-	      id
-	      amount
-	      reserve {
-		id
-	      }
-	    }
-	  }
-	}
+  fragment ReserveFields on Reserve {
+    name
+    decimals
+  }
+
+  query MyQuery($id: ID!) {
+    userTransactions(
+      where: {user: $id}
+    ) {
+      action
+      timestamp
+      ... on Supply {
+        amount
+        assetPriceUSD
+        reserve {
+          ...ReserveFields
+        }
+      }
+      ... on Repay {
+        amount
+        assetPriceUSD
+        reserve {
+          ...ReserveFields
+        }
+        assetPriceUSD
+      }
+      ... on RedeemUnderlying {
+        amount
+        assetPriceUSD
+        reserve {
+          ...ReserveFields
+        }
+      }
+      ... on Borrow {
+        amount
+        assetPriceUSD
+        reserve {
+          ...ReserveFields
+        }
+      }
+      ... on ClaimRewardsCall {
+        amount
+      }
+    }
+  }
 `
 
 const endpoint = `https://gateway-arbitrum.network.thegraph.com/api/${THEGRAPH_API_KEY}/subgraphs/id/2xrWGGZ5r8Z7wdNdHxhbRVKcAD2dDgv3F2NcjrZmxifJ`
