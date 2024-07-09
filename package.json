@@ -24,7 +24,6 @@
   "author": "Sylvain Leroux",
   "license": "MIT",
   "dependencies": {
-    "@urql/core": "^5.0.4",
     "node-fetch": "2"
   },
   "devDependencies": {
