@@ -10,7 +10,10 @@
     "outDir": "build"
   },
   "files": [
+    "test/swarm.spec.ts",
+
     "src/rmm.ts",
+    "src/swarm.ts",
     "src/main.ts"
   ],
   "watchOptions": {

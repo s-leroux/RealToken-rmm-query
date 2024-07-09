@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "test": "mocha",
-    "start": "env $(cat .env) node build/main.js",
+    "test": "mocha build/test",
+    "start": "env $(cat .env) node build/src/main.js",
     "build-container": "sudo docker build --tag \"${npm_package_config_container_tag}\" - < DOCKERFILE",
     "run-container": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home -p 3000:3000/tcp \"${npm_package_config_container_tag}\" npm start",
     "shell": "sudo docker run -it --rm --user \"$(id -u):$(id -g)\" --mount type=bind,src=\"$(pwd)\",dst=/home \"${npm_package_config_container_tag}\" /bin/bash"
@@ -24,10 +24,14 @@
   "author": "Sylvain Leroux",
   "license": "MIT",
   "dependencies": {
+    "chai": "4",
     "node-fetch": "2"
   },
   "devDependencies": {
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
     "@types/node": "^20.14.9",
+    "mocha": "^10.6.0",
     "typescript": "^5.5.2"
   }
 }

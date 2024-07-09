@@ -53,3 +53,52 @@ export class Scanner {
   }
 }
 
+import { Swarm } from "./swarm";
+
+class Account {
+  readonly scanner: Scanner;
+  readonly graph: Graph;
+
+  constructor(scanner: Scanner, graph: Graph) {
+    this.scanner = scanner
+    this.graph = graph
+  }
+
+  async tokenTransfers(address: string) {
+    const res = await this.scanner.accountTokenTransfers(address);
+    const transfers = res.result;
+
+    const contracts = this.graph.swarm("contract");
+    const addresses = this.graph.swarm("address");
+    for (const transfer of transfers) {
+      transfer.contractAddress = contracts.item(transfer.contractAddress);
+      transfer.from = addresses.item(transfer.from);
+      transfer.to = addresses.item(transfer.to);
+    }
+    return transfers;
+  }
+}
+
+export class Graph {
+  readonly scanner: Scanner;
+  readonly swarms: Map<string, Swarm>;
+
+  constructor(scanner: Scanner) {
+    this.scanner = scanner;
+    this.swarms = new Map();
+  }
+
+  swarm(key: string): Swarm {
+    let swarm = this.swarms.get(key);
+    if (swarm === undefined) {
+      swarm = new Swarm();
+      this.swarms.set(key, swarm);
+    }
+
+    return swarm;
+  }
+
+  get account() {
+    return new Account(this.scanner, this);
+  }
+}
