@@ -348,6 +348,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"decimal.js@npm:^10.4.3":
+  version: 10.4.3
+  resolution: "decimal.js@npm:10.4.3"
+  checksum: 10c0/6d60206689ff0911f0ce968d40f163304a6c1bc739927758e6efc7921cfa630130388966f16bf6ef6b838cb33679fbe8e7a78a2f3c478afce841fd55ac8fb8ee
+  languageName: node
+  linkType: hard
+
 "deep-eql@npm:^4.1.3":
   version: 4.1.4
   resolution: "deep-eql@npm:4.1.4"
@@ -1169,6 +1176,7 @@ __metadata:
     "@types/mocha": "npm:^10"
     "@types/node": "npm:^20.14.9"
     chai: "npm:4"
+    decimal.js: "npm:^10.4.3"
     mocha: "npm:^10.6.0"
     node-fetch: "npm:2"
     typescript: "npm:^5.5.2"

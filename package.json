@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "chai": "4",
+    "decimal.js": "^10.4.3",
     "node-fetch": "2"
   },
   "devDependencies": {
