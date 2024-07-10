@@ -8,7 +8,7 @@ export class Swarm {
     this.map = new Map();
   }
 
-  item(key: string, data = {}) {
+  item(key: string, data: object = {}) {
     let obj = this.map.get(key);
     if (obj === undefined) {
       obj = { __id: key };

@@ -57,23 +57,24 @@ import { Swarm } from "./swarm";
 
 class Account {
   readonly scanner: Scanner;
-  readonly graph: Graph;
+  readonly swarm: Swarm;
 
-  constructor(scanner: Scanner, graph: Graph) {
+  constructor(scanner: Scanner, swarm: Swarm) {
     this.scanner = scanner
-    this.graph = graph
+    this.swarm = swarm
+
+    // populate with well-known addresses
+    this.swarm.item("0x0000000000000000000000000000000000000000", { name: "Null" });
   }
 
   async tokenTransfers(address: string) {
     const res = await this.scanner.accountTokenTransfers(address);
     const transfers = res.result;
 
-    const contracts = this.graph.swarm("contract");
-    const addresses = this.graph.swarm("address");
     for (const transfer of transfers) {
-      transfer.contractAddress = contracts.item(transfer.contractAddress);
-      transfer.from = addresses.item(transfer.from);
-      transfer.to = addresses.item(transfer.to);
+      transfer.contractAddress = this.swarm.item(transfer.contractAddress);
+      transfer.from = this.swarm.item(transfer.from);
+      transfer.to = this.swarm.item(transfer.to);
     }
     return transfers;
   }
@@ -81,24 +82,14 @@ class Account {
 
 export class Graph {
   readonly scanner: Scanner;
-  readonly swarms: Map<string, Swarm>;
+  readonly swarm: Swarm;
 
   constructor(scanner: Scanner) {
     this.scanner = scanner;
-    this.swarms = new Map();
-  }
-
-  swarm(key: string): Swarm {
-    let swarm = this.swarms.get(key);
-    if (swarm === undefined) {
-      swarm = new Swarm();
-      this.swarms.set(key, swarm);
-    }
-
-    return swarm;
+    this.swarm = new Swarm();
   }
 
   get account() {
-    return new Account(this.scanner, this);
+    return new Account(this.scanner, this.swarm);
   }
 }
