@@ -54,6 +54,7 @@ export class Scanner {
 }
 
 import { Swarm } from "./swarm";
+import { Decimal } from "./decimal";
 
 class Account {
   readonly scanner: Scanner;
@@ -75,6 +76,8 @@ class Account {
       transfer.contractAddress = this.swarm.item(transfer.contractAddress);
       transfer.from = this.swarm.item(transfer.from);
       transfer.to = this.swarm.item(transfer.to);
+      transfer.amount = Decimal.fromDigits(transfer.value, transfer.tokenDecimal)
+      transfer.amountAsString = transfer.amount.toString(); // Mostly for testing purposes
     }
     return transfers;
   }

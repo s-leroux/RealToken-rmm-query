@@ -10,8 +10,10 @@
     "outDir": "build"
   },
   "files": [
+    "test/decimal.spec.ts",
     "test/swarm.spec.ts",
 
+    "src/decimal.ts",
     "src/rmm.ts",
     "src/swarm.ts",
     "src/main.ts"
