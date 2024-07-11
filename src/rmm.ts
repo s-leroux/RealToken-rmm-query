@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import { URL, URLSearchParams } from 'node:url'; 
 
 const GNOSISSCAN_BASE_ADDRESS='https://api.gnosisscan.io/api'
+const GNOSIS_NATIVE_COIN_DECIMALS=18
 
 export class Scanner {
   readonly origin;
@@ -40,6 +41,18 @@ export class Scanner {
     return await this.fetch(params)
   }
 
+  async accountInternalTransactions(address: string) {
+    const params = {
+      module: 'account',
+      action: 'txlistinternal',
+      startBlock: 0,
+      endBlock: 99999999,
+      sort: 'asc',
+      address: address,
+    }
+    return await this.fetch(params)
+  }
+
   async accountTokenTransfers(address: string) {
     const params = {
       module: 'account',
@@ -68,6 +81,20 @@ class Account {
 
     // populate with well-known addresses
     this.swarm.item("0x0000000000000000000000000000000000000000", { name: "Null" });
+  }
+
+  async internalTransactions() {
+    const res = await this.scanner.accountInternalTransactions(this.address);
+    const transfers = res.result;
+
+    for (const transfer of transfers) {
+      transfer.contractAddress = this.swarm.item(transfer.contractAddress);
+      transfer.from = this.swarm.item(transfer.from);
+      transfer.to = this.swarm.item(transfer.to);
+      transfer.amount = Decimal.fromDigits(transfer.value, GNOSIS_NATIVE_COIN_DECIMALS)
+      transfer.amountAsString = transfer.amount.toString(); // Mostly for testing purposes
+    }
+    return transfers;
   }
 
   async tokenTransfers() {

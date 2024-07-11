@@ -32,10 +32,12 @@ async function testGnosisFetch() {
   }
 
   const account = graph.account(MY_WALLET);
-  const result = await account.tokenTransfers();
+  const tt = await account.tokenTransfers();
+  const it = await account.internalTransactions();
 
   console.dir(graph.swarm, { depth: 10 });
-  console.dir(result);
+  console.dir(tt);
+  console.dir(it);
 }
 
 async function main() {
