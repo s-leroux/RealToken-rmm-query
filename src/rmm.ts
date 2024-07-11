@@ -59,17 +59,19 @@ import { Decimal } from "./decimal";
 class Account {
   readonly scanner: Scanner;
   readonly swarm: Swarm;
+  readonly address;
 
-  constructor(scanner: Scanner, swarm: Swarm) {
+  constructor(scanner: Scanner, swarm: Swarm, address: string) {
     this.scanner = scanner
     this.swarm = swarm
+    this.address = address
 
     // populate with well-known addresses
     this.swarm.item("0x0000000000000000000000000000000000000000", { name: "Null" });
   }
 
-  async tokenTransfers(address: string) {
-    const res = await this.scanner.accountTokenTransfers(address);
+  async tokenTransfers() {
+    const res = await this.scanner.accountTokenTransfers(this.address);
     const transfers = res.result;
 
     for (const transfer of transfers) {
@@ -92,7 +94,7 @@ export class Graph {
     this.swarm = new Swarm();
   }
 
-  get account() {
-    return new Account(this.scanner, this.swarm);
+  account(address: string) {
+    return new Account(this.scanner, this.swarm, address);
   }
 }

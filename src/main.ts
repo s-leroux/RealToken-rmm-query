@@ -31,7 +31,8 @@ async function testGnosisFetch() {
     graph.swarm.item(addr, data);
   }
 
-  const result = await graph.account.tokenTransfers(MY_WALLET);
+  const account = graph.account(MY_WALLET);
+  const result = await account.tokenTransfers();
 
   console.dir(graph.swarm, { depth: 10 });
   console.dir(result);
