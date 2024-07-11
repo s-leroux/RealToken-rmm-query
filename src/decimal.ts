@@ -11,15 +11,17 @@ function toInt(src: number|string) {
 }
 
 export const Decimal = {
-  fromDigits(digits: number|string, precision: number|string) {
-    const digitsAsString = digits.toString()
-    const precisionAsInteger = toInt(precision);
+  fromInteger(v: number|string) {
+    return new BigNumber(v);
+  },
 
+  fromDigits(digits: number|string, precision: number|string) {
+    const precisionAsInteger = toInt(precision);
     if (precisionAsInteger === 0) {
-      return new BigNumber(digits);
+      return this.fromInteger(digits);
     }
 
-    // else
+    const digitsAsString = digits.toString()
     const amount =
       digitsAsString.slice(0, -precisionAsInteger)
       + "."

@@ -69,7 +69,7 @@ export class Scanner {
 import { Swarm } from "./swarm";
 import { Decimal } from "./decimal";
 
-const E18=Decimal.fromDigits(1e18, 0);
+const E18=Decimal.fromInteger(1e18);
 
 class Account {
   readonly scanner: Scanner;
@@ -96,7 +96,7 @@ class Account {
       transfer.amount = Decimal.fromDigits(transfer.value, GNOSIS_NATIVE_COIN_DECIMALS)
       transfer.amountAsString = transfer.amount.toString(); // Mostly for testing purposes
 
-      transfer.fees = Decimal.fromDigits(transfer.gasPrice, 0)
+      transfer.fees = Decimal.fromInteger(transfer.gasPrice)
         .mul(transfer.gasUsed)
         .div(E18);
       transfer.feesAsString = transfer.fees.toString();

@@ -2,6 +2,32 @@ import { Decimal } from "../src/decimal"
 import { assert } from 'chai'
 
 describe("Decimal", () => {
+  describe("fromInteger", () => {
+    const good = [
+      [ "000", "0" ],
+      [ "12345", "12345" ],
+
+      [ "108904931320097651", "108904931320097651" ],
+    ];
+
+    const bad = [
+      [ "abc" ],
+      [ "123abc" ],
+    ]
+
+    for (const [value, expected] of good) {
+      it(`should accept ${value} as ${expected}`, () => {
+        const actual = Decimal.fromInteger(value);
+        assert.equal(actual.toString(), expected);
+      });
+    }
+    for (const [value] of bad) {
+      it(`should reject ${value}`, () => {
+        assert.throws(() => Decimal.fromInteger(value));
+      });
+    }
+  });
+
   describe("fromDigits", () => {
     const good = [
       [ "12345", "0", "12345" ],
