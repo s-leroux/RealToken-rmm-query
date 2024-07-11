@@ -66,6 +66,57 @@ export class Scanner {
   }
 }
 
+class Transfer {
+  /*
+   * Abstract representation of a transfer.
+   */
+  readonly data: object;
+  readonly from;
+  readonly to;
+  readonly contractAddress;
+  readonly amount;
+  readonly amountAsString;
+  readonly unit: string|null;
+  readonly symbol: string|null;
+  readonly fees;
+  readonly feesAsString;
+
+  constructor(swarm: Swarm, data) {
+    this.data = data;
+
+    this.from = swarm.item(data.from);
+    this.to = swarm.item(data.to);
+    this.contractAddress = swarm.item(data.contractAddress);
+
+    const value = data.value;
+    if (value === undefined) {
+      this.amount = Decimal.fromInteger(0);
+    }
+    else {
+      const decimal = data.tokenDecimal ?? GNOSIS_NATIVE_COIN_DECIMALS;
+
+      this.amount = Decimal.fromDigits(value, decimal);
+      this.amountAsString = this.amount.toString(); // Mostly for testing purposes
+    }
+
+    this.unit = data.tokenName ?? null;
+    this.symbol = data.tokenSymbol ?? null;
+
+    const gasPrice = data.gasPrice;
+    if (gasPrice === undefined) {
+      this.fees = Decimal.fromInteger(0);
+    }
+    else {
+      this.fees = Decimal.fromInteger(gasPrice)
+        .mul(data.gasUsed)
+        .div(E18);
+      this.feesAsString = this.fees.toString();
+    }
+  }
+
+
+}
+
 import { Swarm } from "./swarm";
 import { Decimal } from "./decimal";
 
@@ -87,49 +138,17 @@ class Account {
 
   async normalTransactions() {
     const res = await this.scanner.accountNormalTransactions(this.address);
-    const transfers = res.result;
-
-    for (const transfer of transfers) {
-      transfer.contractAddress = this.swarm.item(transfer.contractAddress);
-      transfer.from = this.swarm.item(transfer.from);
-      transfer.to = this.swarm.item(transfer.to);
-      transfer.amount = Decimal.fromDigits(transfer.value, GNOSIS_NATIVE_COIN_DECIMALS)
-      transfer.amountAsString = transfer.amount.toString(); // Mostly for testing purposes
-
-      transfer.fees = Decimal.fromInteger(transfer.gasPrice)
-        .mul(transfer.gasUsed)
-        .div(E18);
-      transfer.feesAsString = transfer.fees.toString();
-    }
-    return transfers;
+    return res.result.map((t) => new Transfer(this.swarm, t));
   }
 
   async internalTransactions() {
     const res = await this.scanner.accountInternalTransactions(this.address);
-    const transfers = res.result;
-
-    for (const transfer of transfers) {
-      transfer.contractAddress = this.swarm.item(transfer.contractAddress);
-      transfer.from = this.swarm.item(transfer.from);
-      transfer.to = this.swarm.item(transfer.to);
-      transfer.amount = Decimal.fromDigits(transfer.value, GNOSIS_NATIVE_COIN_DECIMALS)
-      transfer.amountAsString = transfer.amount.toString(); // Mostly for testing purposes
-    }
-    return transfers;
+    return res.result.map((t) => new Transfer(this.swarm, t));
   }
 
   async tokenTransfers() {
     const res = await this.scanner.accountTokenTransfers(this.address);
-    const transfers = res.result;
-
-    for (const transfer of transfers) {
-      transfer.contractAddress = this.swarm.item(transfer.contractAddress);
-      transfer.from = this.swarm.item(transfer.from);
-      transfer.to = this.swarm.item(transfer.to);
-      transfer.amount = Decimal.fromDigits(transfer.value, transfer.tokenDecimal)
-      transfer.amountAsString = transfer.amount.toString(); // Mostly for testing purposes
-    }
-    return transfers;
+    return res.result.map((t) => new Transfer(this.swarm, t));
   }
 }
 
