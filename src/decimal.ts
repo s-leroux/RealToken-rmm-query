@@ -21,12 +21,7 @@ export const Decimal = {
       return this.fromInteger(digits);
     }
 
-    const digitsAsString = digits.toString()
-    const amount =
-      digitsAsString.slice(0, -precisionAsInteger)
-      + "."
-      + digitsAsString.slice(-precisionAsInteger);
-    return new BigNumber(amount);
+    return new BigNumber(digits).div(10 ** precisionAsInteger);
   },
 
 }
