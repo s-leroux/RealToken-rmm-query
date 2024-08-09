@@ -53,8 +53,8 @@ class Transfer {
       this.fees = Decimal.fromInteger(gasPrice)
         .mul(data.gasUsed)
         .div(E18);
-      this.feesAsString = this.fees.toString();
     }
+    this.feesAsString = this.fees.toString();
   }
 
 
@@ -81,17 +81,22 @@ class Account {
 
   async normalTransactions() {
     const res = await this.scanner.accountNormalTransactions(this.address);
-    return res.result.map((t) => new Transfer(this.swarm, t));
+    return res.result
+      .filter(tr => tr.isError === "0")
+      .map((t) => new Transfer(this.swarm, t));
   }
 
   async internalTransactions() {
     const res = await this.scanner.accountInternalTransactions(this.address);
-    return res.result.map((t) => new Transfer(this.swarm, t));
+    return res.result
+      .filter(tr => tr.isError === "0")
+      .map((t) => new Transfer(this.swarm, t));
   }
 
   async tokenTransfers() {
     const res = await this.scanner.accountTokenTransfers(this.address);
-    return res.result.map((t) => new Transfer(this.swarm, t));
+    return res.result
+      .map((t) => new Transfer(this.swarm, t));
   }
 
   async allTransfers() {

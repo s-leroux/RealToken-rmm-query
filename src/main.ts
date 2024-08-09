@@ -50,10 +50,10 @@ async function testGnosisFetch() {
     }
     if (transfer.from.__id == MY_WALLET) {
       snapshot = snapshot.withdraw(transfer.timeStamp, transfer.symbol, transfer.amount);
-    }
-    if (transfer.blockNumber !== last_block) {
-      last_block = transfer.blockNumber;
-      //snapshot = snapshot.withdraw(transfer.timeStamp, null, transfer.fees);
+      if (transfer.blockNumber !== last_block) {
+        last_block = transfer.blockNumber;
+        snapshot = snapshot.withdraw(transfer.timeStamp, null, transfer.fees);
+      }
     }
 
     console.log(snapshot);

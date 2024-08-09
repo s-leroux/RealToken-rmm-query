@@ -14,7 +14,7 @@ export class Snapshot {
     const prev_balance = portfolio.get(coin) ?? Decimal.ZERO;
     portfolio.set(coin, prev_balance.add(amount));
 
-    console.log(coin, amount.toString());
+    console.log("TX", coin, amount.toString());
 
     return new Snapshot(timestamp, portfolio);
   }
