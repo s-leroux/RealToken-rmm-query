@@ -1,70 +1,9 @@
 import fetch from 'node-fetch';
 import { URL, URLSearchParams } from 'node:url';
+import { GnosisScan } from './service/gnosisscan';
 
-const GNOSISSCAN_BASE_ADDRESS='https://api.gnosisscan.io/api'
 const GNOSIS_NATIVE_COIN_DECIMALS=18
 
-export class Scanner {
-  readonly origin;
-  readonly api_key;
-
-  constructor(api_key: string, origin: string = GNOSISSCAN_BASE_ADDRESS) {
-    this.origin = origin;
-    this.api_key = api_key;
-  }
-
-  buildUrl(params): URL {
-    const url = new URL(this.origin);
-    const search_params = new URLSearchParams(params);
-    search_params.set('apiKey', this.api_key);
-    url.search = search_params.toString()
-
-    return url;
-  }
-
-  async fetch(params) {
-    const url = this.buildUrl(params);
-    const res = await fetch(url);
-
-    return await res.json();
-  }
-
-  async accountNormalTransactions(address: string) {
-    const params = {
-      module: 'account',
-      action: 'txlist',
-      startBlock: 0,
-      endBlock: 99999999,
-      sort: 'asc',
-      address: address,
-    }
-    return await this.fetch(params)
-  }
-
-  async accountInternalTransactions(address: string) {
-    const params = {
-      module: 'account',
-      action: 'txlistinternal',
-      startBlock: 0,
-      endBlock: 99999999,
-      sort: 'asc',
-      address: address,
-    }
-    return await this.fetch(params)
-  }
-
-  async accountTokenTransfers(address: string) {
-    const params = {
-      module: 'account',
-      action: 'tokentx',
-      startBlock: 0,
-      endBlock: 99999999,
-      sort: 'asc',
-      address: address,
-    }
-    return await this.fetch(params)
-  }
-}
 
 class Transfer {
   /*
@@ -127,11 +66,11 @@ import { Decimal, toInteger } from "./decimal";
 const E18=Decimal.fromInteger(1e18);
 
 class Account {
-  readonly scanner: Scanner;
+  readonly scanner: GnosisScan;
   readonly swarm: Swarm;
   readonly address;
 
-  constructor(scanner: Scanner, swarm: Swarm, address: string) {
+  constructor(scanner: GnosisScan, swarm: Swarm, address: string) {
     this.scanner = scanner
     this.swarm = swarm
     this.address = address
@@ -172,10 +111,10 @@ class Account {
 }
 
 export class Graph {
-  readonly scanner: Scanner;
+  readonly scanner: GnosisScan;
   readonly swarm: Swarm;
 
-  constructor(scanner: Scanner) {
+  constructor(scanner: GnosisScan) {
     this.scanner = scanner;
     this.swarm = new Swarm();
   }

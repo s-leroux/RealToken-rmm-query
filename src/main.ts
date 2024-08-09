@@ -1,4 +1,5 @@
-import { Scanner, Graph } from "./rmm"
+import { Graph } from "./rmm"
+import { GnosisScan } from "./service/gnosisscan"
 
 const MY_WALLET=process.env.MY_WALLET;
 const GNOSISSCAN_API_KEY=process.env.GNOSISSCAN_API_KEY;
@@ -20,7 +21,7 @@ const WELL_KNOWN_ADDRESSES: [string, object][] = [
 import { Snapshot } from "./portfolio";
 
 async function testGnosisFetch() {
-  const scanner = new Scanner(GNOSISSCAN_API_KEY);
+  const scanner = GnosisScan.create(GNOSISSCAN_API_KEY);
   const graph = new Graph(scanner);
 
   graph.swarm.item(MY_WALLET, { name: "My Wallet" });

@@ -11,10 +11,12 @@
   },
   "files": [
     "test/decimal.spec.ts",
+    "test/gnosisscan.spec.ts",
     "test/swarm.spec.ts",
 
     "src/decimal.ts",
     "src/rmm.ts",
+    "src/service/gnosisscan.ts",
     "src/swarm.ts",
     "src/portfolio.ts",
     "src/main.ts"
