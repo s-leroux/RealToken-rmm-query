@@ -16,6 +16,7 @@
     "src/decimal.ts",
     "src/rmm.ts",
     "src/swarm.ts",
+    "src/portfolio.ts",
     "src/main.ts"
   ],
   "watchOptions": {

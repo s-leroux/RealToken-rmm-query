@@ -71,6 +71,8 @@ class Transfer {
    * Abstract representation of a transfer.
    */
   readonly data: object;
+  readonly blockNumber: number;
+  readonly timeStamp: number;
   readonly from;
   readonly to;
   readonly contractAddress;
@@ -83,6 +85,8 @@ class Transfer {
 
   constructor(swarm: Swarm, data) {
     this.data = data;
+    this.blockNumber = toInteger(data.blockNumber);
+    this.timeStamp = toInteger(data.timeStamp);
 
     this.from = swarm.item(data.from);
     this.to = swarm.item(data.to);
@@ -90,7 +94,7 @@ class Transfer {
 
     const value = data.value;
     if (value === undefined) {
-      this.amount = Decimal.fromInteger(0);
+      this.amount = Decimal.ZERO;
     }
     else {
       const decimal = data.tokenDecimal ?? GNOSIS_NATIVE_COIN_DECIMALS;
@@ -104,7 +108,7 @@ class Transfer {
 
     const gasPrice = data.gasPrice;
     if (gasPrice === undefined) {
-      this.fees = Decimal.fromInteger(0);
+      this.fees = Decimal.ZERO;
     }
     else {
       this.fees = Decimal.fromInteger(gasPrice)
@@ -118,7 +122,7 @@ class Transfer {
 }
 
 import { Swarm } from "./swarm";
-import { Decimal } from "./decimal";
+import { Decimal, toInteger } from "./decimal";
 
 const E18=Decimal.fromInteger(1e18);
 
@@ -149,6 +153,21 @@ class Account {
   async tokenTransfers() {
     const res = await this.scanner.accountTokenTransfers(this.address);
     return res.result.map((t) => new Transfer(this.swarm, t));
+  }
+
+  async allTransfers() {
+    /*
+     * Merge {normal, internal, token} transfers in one single list ordered by timestamp.
+     */
+
+    // naive implementation
+    const result = await this.normalTransactions();
+    for (const item of await this.internalTransactions())
+      result.push(item);
+    for (const item of await this.tokenTransfers())
+      result.push(item);
+
+    return result.sort((a, b) => a.blockNumber - b.blockNumber);
   }
 }
 

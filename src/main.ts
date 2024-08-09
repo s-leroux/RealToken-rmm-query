@@ -17,6 +17,8 @@ const WELL_KNOWN_ADDRESSES: [string, object][] = [
   [ "0xddafbb505ad214d7b80b1f830fccc89b60fb7a83", { name: "USD//C on xDai" } ],
 ]
 
+import { Snapshot } from "./portfolio";
+
 async function testGnosisFetch() {
   const scanner = new Scanner(GNOSISSCAN_API_KEY);
   const graph = new Graph(scanner);
@@ -32,14 +34,35 @@ async function testGnosisFetch() {
   }
 
   const account = graph.account(MY_WALLET);
-  const tt = await account.tokenTransfers();
-  const it = await account.internalTransactions();
-  const nt = await account.normalTransactions();
+  const result = await account.allTransfers();
 
   console.dir(graph.swarm, { depth: 10 });
-  console.dir(tt);
-  console.dir(it);
-  console.dir(nt);
+  for (const t of result) {
+    console.dir(t, { depth: 1 });
+  }
+
+  let last_block = 0
+  const snapshots = result.reduce((acc, transfer) => {
+    let snapshot = acc;
+    if (transfer.to.__id == MY_WALLET) {
+      snapshot = snapshot.deposit(transfer.timeStamp, transfer.symbol, transfer.amount);
+    }
+    if (transfer.from.__id == MY_WALLET) {
+      snapshot = snapshot.withdraw(transfer.timeStamp, transfer.symbol, transfer.amount);
+    }
+    if (transfer.blockNumber !== last_block) {
+      last_block = transfer.blockNumber;
+      //snapshot = snapshot.withdraw(transfer.timeStamp, null, transfer.fees);
+    }
+
+    console.log(snapshot);
+    return snapshot;
+  }, new Snapshot(0));
+  return;
+  for (const snapshot of snapshots) {
+    console.dir(snapshot);
+  }
+
 }
 
 async function main() {
