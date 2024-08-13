@@ -4,7 +4,7 @@ import { GnosisScan } from './service/gnosisscan';
 
 const GNOSIS_NATIVE_COIN_DECIMALS=18
 
-import { Trnsaction } from "./transaction";
+import { NormalTransaction, InternalTransaction, ERC20TokenTransfer } from "./transaction";
 import { Swarm } from "./swarm";
 import { Decimal, toInteger } from "./decimal";
 
@@ -26,20 +26,20 @@ class Account {
     const res = await this.scanner.accountNormalTransactions(this.address);
     return res.result
       .filter(tr => tr.isError === "0")
-      .map((t) => new Transaction(this.swarm, t));
+      .map((t) => new NormalTransaction(this.swarm, t));
   }
 
   async internalTransactions() {
     const res = await this.scanner.accountInternalTransactions(this.address);
     return res.result
       .filter(tr => tr.isError === "0")
-      .map((t) => new Transaction(this.swarm, t));
+      .map((t) => new InternalTransaction(this.swarm, t));
   }
 
   async tokenTransfers() {
     const res = await this.scanner.accountTokenTransfers(this.address);
     return res.result
-      .map((t) => new Transaction(this.swarm, t));
+      .map((t) => new ERC20TokenTransfer(this.swarm, t));
   }
 
   async allTransfers() {

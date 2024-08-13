@@ -7,11 +7,17 @@ const GNOSIS_NATIVE_COIN_DECIMALS=18
 import { Decimal, toInteger } from "./decimal";
 import { Swarm } from "./swarm";
 
+type TransactionType =
+  "NORMAL"        // a normal transaction
+  | "INTERNAL"    // an internal transaction
+  | "ERC20"       // an ERC-20 token transfer
+;
+
 export class Transaction {
   /*
    * Abstract representation of a transfer.
    */
-  readonly data: object;
+  readonly type: TransactionType;
   readonly blockNumber: number;
   readonly timeStamp: number;
   readonly from;
@@ -23,8 +29,10 @@ export class Transaction {
   readonly symbol: string|null;
   readonly fees;
   readonly feesAsString;
+  readonly data: object;
 
-  constructor(swarm: Swarm, data) {
+  constructor(swarm: Swarm, type: TransactionType, data) {
+    this.type = type
     this.data = data;
     this.blockNumber = toInteger(data.blockNumber);
     this.timeStamp = toInteger(data.timeStamp);
@@ -58,6 +66,39 @@ export class Transaction {
     }
     this.feesAsString = this.fees.toString();
   }
+};
 
+export class NormalTransaction extends Transaction {
+  /**
+   * A normal transaction is a a transaction where an Externally Owned Address (EOA) sends
+   * ETH directly to another EOA.
+   */
+  constructor(swarm: Swarm, data) {
+    super(swarm, "NORMAL", data);
+  }
 
-}
+};
+
+export class InternalTransaction extends Transaction {
+  /**
+   * Internal transactions are not initiated by a user. Instead, theyare initiated by smart
+   * contract code when certain conditions within the contract are met.
+   *
+   * For internal transactions the Gas is paid for by the original normal transaction that
+   * triggered the smart contract.
+   */
+  constructor(swarm: Swarm, data) {
+    super(swarm, "INTERNAL", data);
+  }
+
+};
+
+export class ERC20TokenTransfer extends Transaction {
+  /**
+   * An ERC-20 token transfer;
+   */
+  constructor(swarm: Swarm, data) {
+    super(swarm, "ERC20", data);
+  }
+
+};
