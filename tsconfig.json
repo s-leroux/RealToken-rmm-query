@@ -12,9 +12,11 @@
   "files": [
     "test/decimal.spec.ts",
     "test/gnosisscan.spec.ts",
+    "test/ledger.spec.ts",
     "test/swarm.spec.ts",
 
     "src/decimal.ts",
+    "src/ledger.ts",
     "src/rmm.ts",
     "src/service/gnosisscan.ts",
     "src/swarm.ts",

@@ -38,9 +38,12 @@ async function testGnosisFetch() {
   const result = await account.allTransfers();
 
   console.dir(graph.swarm, { depth: 10 });
+  let transactionCount = 0;
   for (const t of result) {
+    console.log(`Transaction #${transactionCount++}`);
     console.dir(t, { depth: 1 });
   }
+  console.log(`${transactionCount} transactions`);
 
   let last_block = 0
   const snapshots = result.reduce((acc, transfer) => {

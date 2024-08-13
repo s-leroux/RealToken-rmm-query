@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { URL, URLSearchParams } from 'node:url';
 import { GnosisScan } from './service/gnosisscan';
+import { Ledger } from "./ledger";
 
 const GNOSIS_NATIVE_COIN_DECIMALS=18
 
@@ -24,22 +25,31 @@ class Account {
 
   async normalTransactions() {
     const res = await this.scanner.accountNormalTransactions(this.address);
-    return res.result
-      .filter(tr => tr.isError === "0")
-      .map((t) => new NormalTransaction(this.swarm, t));
+
+    return Ledger.create(
+      res.result
+        .filter(tr => tr.isError === "0")
+        .map((t) => new NormalTransaction(this.swarm, t))
+    );
   }
 
   async internalTransactions() {
     const res = await this.scanner.accountInternalTransactions(this.address);
-    return res.result
-      .filter(tr => tr.isError === "0")
-      .map((t) => new InternalTransaction(this.swarm, t));
+
+    return Ledger.create(
+      res.result
+        .filter(tr => tr.isError === "0")
+        .map((t) => new InternalTransaction(this.swarm, t))
+    );
   }
 
   async tokenTransfers() {
     const res = await this.scanner.accountTokenTransfers(this.address);
-    return res.result
-      .map((t) => new ERC20TokenTransfer(this.swarm, t));
+
+    return Ledger.create(
+      res.result
+        .map((t) => new ERC20TokenTransfer(this.swarm, t))
+    );
   }
 
   async allTransfers() {
@@ -48,13 +58,13 @@ class Account {
      */
 
     // naive implementation
-    const result = await this.normalTransactions();
-    for (const item of await this.internalTransactions())
-      result.push(item);
-    for (const item of await this.tokenTransfers())
-      result.push(item);
+    const [normal, internal, erc20] = await Promise.all([
+      this.normalTransactions(),
+      this.internalTransactions(),
+      this.tokenTransfers(),
+    ]);
 
-    return result.sort((a, b) => a.blockNumber - b.blockNumber);
+    return Ledger.create(normal).union(internal).union(erc20);
   }
 }
 

@@ -18,6 +18,7 @@ export class Transaction {
    * Abstract representation of a transfer.
    */
   readonly type: TransactionType;
+  readonly key: string;
   readonly blockNumber: number;
   readonly timeStamp: number;
   readonly from;
@@ -33,6 +34,10 @@ export class Transaction {
 
   constructor(swarm: Swarm, type: TransactionType, data) {
     this.type = type
+    this.key =
+      data.timeStamp.padStart(12)
+      + data.blockNumber.padStart(12)
+      + (data.nonce ?? "0").padStart(10);
     this.data = data;
     this.blockNumber = toInteger(data.blockNumber);
     this.timeStamp = toInteger(data.timeStamp);
