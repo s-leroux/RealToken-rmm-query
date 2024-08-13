@@ -18,6 +18,7 @@
     "src/rmm.ts",
     "src/service/gnosisscan.ts",
     "src/swarm.ts",
+    "src/transaction.ts",
     "src/portfolio.ts",
     "src/main.ts"
   ],

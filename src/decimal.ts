@@ -28,6 +28,7 @@ export const Decimal = {
     return new BigNumber(digits).div(10 ** precisionAsInteger);
   },
 
-  ZERO: new BigNumber(0),
+ E18: new BigNumber(1e18),
+ ZERO: new BigNumber(0),
 }
 
